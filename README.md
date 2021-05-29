@@ -1,9 +1,16 @@
-# Loot Sheet NPC Starfinder
+# Endrial Module
 
-This module adds an additional NPC sheet which can be used for loot containers such as chests. It also allows spells to be automatically converted into spell scrolls by dragging them onto this sheet. 
+This module modifies the core PF1 system for the 
 
-This version was forked from SvenWerlen's fork of Jan Ole Peek's module which doesn't support sfrpg system (https://github.com/SvenWerlen/fvtt-loot-sheet-npc-pf1, https://github.com/jopeek/fvtt-loot-sheet-npc-5e). 
-This fork will be maintained separately and specifically for Starfinder
+List of modified rules:
+- Married wounds and vigor, and wounds thresholds
+- Custom wounds calculation (2*CON + CON-mod per level)
+- Rest:
+    - Restore all vigor
+    - Restore 1 wound, 2 if long term care is done
+- Nonleathal Damage changes:
+    - decrease vigor until 0, after that track nonleathal damage counting up
+    - when nonleathal damage is >= your current wounds you become unconcious 
 
 <p style="color:red">Development in progress ...</p>
 
