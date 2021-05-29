@@ -119,12 +119,23 @@
 });*/
 
 Hooks.on("actorRest", (actor,options,updateData,itemUpdates)=> {
-  let vigor = actor.data.data.attributes.vigor;
+  const promises = [];
+  let vigor = actor.data.data.attributes.vigor,
+    wounds = actor.data.data.attributes.wounds;
+  console.log(options);
+  wounds.value += 1;
+  if(options?.longTermCare) {
+    wounds.value += 1;
+  }
+  console.log(wounds.value);
+
   promises.push(
-    t.actor.update({
+    actor.update({
       "data.attributes.vigor.value": vigor.max,
+      "data.attributes.wounds.value":wounds.value
     })
   );
+  return Promise.all(promises);
   //recover wounds
 });
 
