@@ -20,9 +20,9 @@
       }
   ],
   "socket": true,
-  "url": "",
-  "download": "",
-  "manifest": "",
+  "url": "https://github.com/RowanAdvisors/endrial-module",
+  "download": "https://github.com/RowanAdvisors/endrial-module/releases/download/1.0/endrial-module.zip",
+  "manifest": "https://raw.githubusercontent.com/RowanAdvisors/endrial-module/main/module.json",
   "minimumCoreVersion": "0.7.4",
   "compatibleCoreVersion": "0.7.9"
 }
