@@ -1,0 +1,28 @@
+{
+  "name": "endrial-module",
+  "title": "Endrial PF1E Rule Changes",
+  "description": "This module makes some rule changes specifically for the Endrial campaign setting.",
+  "version": "1.0.0",
+  "author": "James R (Addictedgmr77)",
+  "systems": ["pf1"],
+  "esmodules": ["/endrial-module.js"],
+  "styles": ["/css/lootsheetnpcsfrpg.css"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "dependencies": [
+      {
+          "name": "lib-wrapper"
+      }
+  ],
+  "socket": true,
+  "url": "",
+  "download": "",
+  "manifest": "",
+  "minimumCoreVersion": "0.7.4",
+  "compatibleCoreVersion": "0.7.9"
+}
