@@ -167,7 +167,8 @@ Hooks.once("init", () => {
     const card = button.closest(".chat-card");
     const cardbuttongrp = button.closest(".card-button-group");
     const action = button.dataset.action;
-    console.log(action);
+    //console.log(action);
+    //console.log(item);
     if (action == "applyDamage") {
       return ActorPFEndrial.applyDamage(button.dataset.value, cardbuttongrp, item);
     }
@@ -176,6 +177,14 @@ Hooks.once("init", () => {
     // ... do things ...
     return result;
 }, 'MIXED' /* optional, since this is the default type */ );
+/*
+libWrapper.register('endrial-module', 'game.pf1.entities.ActorPF.updateWoundThreshold', function (wrapped, ...args) {
+  console.log(args);
+  // ... do things ...
+  let result = wrapped(...args);
+  // ... do things ...
+  return result;
+}, 'MIXED' /* optional, since this is the default type */ //);
   
   //Override Actor Behaviour:
   //game.pf1.entities.ActorPF.applyDamage = ActorPFEndrial.applyDamage

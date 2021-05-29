@@ -29,9 +29,12 @@ export class ActorPFEndrial {
       numReg = /(\d+)/g,
       sliceReg = /[^,;\n]*(\d+)[^,;\n]*/g;
 
+      //prep conditional things that might be used in both systems
       let crit = cardbuttongrp.innerText.indexOf("Critical"); //-1 if not a crit
       asNonlethal = item.data.data.nonlethal;
       let multiply = item.data.data.ability.critMult;
+      let sneak = item.data.data.conditionals?.find((i) => { return i.name === "Sneak Attack"; });
+      
 
     //if (!controlled) return;
     //get Health Config
@@ -105,21 +108,36 @@ export class ActorPFEndrial {
             value -= nld;
           }
 
+          
+
           //deal wounds when out of vigor
           if(vigor.value - (value-dt) <= 0) {
             wounds.value = Math.clamped(wounds.value - (value-dt-vigor.value), 0, wounds.max);
           }
 
+          //Sneak Wound damage
+          let sneakDmg = 0;
+          if(sneak !== undefined) {
+            let sneakDice = sneak.modifiers[0].formula;
+            sneakDice = sneakDice.substr(0,sneakDice.toLowerCase().indexOf("d"));
+            sneakDmg = Math.floor(Number.parseInt(sneakDice) / 2);
+          }
+
+          //Crit wound damage
+          let critDmg = 0
           if(crit >= 0) {
             //add crit logic here
+            critDmg = multiply;
           }
+          
+
 
           promises.push(
             t.actor.update({
               "data.attributes.hp.nonlethal": hp.nonlethal + nld,
               "data.attributes.vigor.temp": tmp - dt,
               "data.attributes.vigor.value": Math.clamped(vigor.value - (value - dt), 0, vigor.max),
-              "data.attributes.wounds.value":wounds.value
+              "data.attributes.wounds.value":Math.clamped(wounds.value - sneakDmg - critDmg, 0, wounds.max)
             })
           );
         }
@@ -217,78 +235,5 @@ export class ActorPFEndrial {
     } 
   }
 
-  /**
-   * Returns effective Wound Threshold multiplier with rules and overrides applied.
-   *
-   * @param data
-   */
-  getWoundThresholdMultiplier(data = null) {
-    data = data ?? this.data;
-
-    const hpconf = game.settings.get("pf1", "healthConfig").variants;
-    const conf = this.data.type === "npc" ? hpconf.npc : hpconf.pc;
-    const override = getProperty(data, "data.attributes.woundThresholds.override") ?? -1;
-    return override >= 0 && conf.allowWoundThresholdOverride ? override : conf.useWoundThresholds;
-  }
-
-  /**
-   * Returns Wound Threshold relevant data.
-   *
-   * @param {*} rollData Provided valid rollData
-   * @param data
-   */
-  getWoundThresholdData(data = null) {
-    data = data ?? this.data;
-
-    const woundMult = this.getWoundThresholdMultiplier(data),
-      woundLevel = getProperty(data, "data.attributes.woundThresholds.level") ?? 0,
-      woundPenalty = woundLevel * woundMult + (getProperty(data, "data.attributes.woundThresholds.mod") ?? 0);
-    return {
-      level: woundLevel,
-      penalty: woundPenalty,
-      multiplier: woundMult,
-      valid: woundLevel > 0 && woundMult > 0,
-    };
-  }
-
-  /**
-   * Updates attributes.woundThresholds.level variable.
-   */
-  updateWoundThreshold() {
-    const hpconf = game.settings.get("pf1", "healthConfig").variants;
-    const usage = this.data.type === "npc" ? hpconf.npc.useWoundThresholds : hpconf.pc.useWoundThresholds;
-    if (!usage) {
-      setProperty(this.data, "data.attributes.woundThresholds.level", 0);
-      setProperty(this.data, "data.attributes.woundThresholds.penaltyBase", 0);
-      setProperty(this.data, "data.attributes.woundThresholds.penalty", 0);
-      return;
-    }
-
-    //checking if wounds and vigor is on
-    const curHP = getProperty(this.data, "data.attributes.hp.value"),
-      maxHP = getProperty(this.data, "data.attributes.hp.max");
-
-    let level = usage > 0 ? Math.min(3, 4 - Math.ceil((curHP / maxHP) * 4)) : 0;
-    if (Number.isNaN(level)) level = 0; // BUG: This shouldn't happen, but it does.
-    level = Math.max(0, level);
-
-    const wtMult = this.getWoundThresholdMultiplier();
-    const wtMod = getProperty(this.data, "data.attributes.woundThresholds.mod") ?? 0;
-
-    setProperty(this.data, "data.attributes.woundThresholds.level", level);
-    setProperty(this.data, "data.attributes.woundThresholds.penaltyBase", level * wtMult); // To aid relevant formulas
-    setProperty(this.data, "data.attributes.woundThresholds.penalty", level * wtMult + wtMod);
-
-    const penalty = getProperty(this.data, "data.attributes.woundThresholds.penalty");
-    const changeFlatKeys = ["cmb", "cmd", "init", "allSavingThrows", "ac", "skills", "allChecks"];
-    for (let fk of changeFlatKeys) {
-      let flats = getChangeFlat.call(this, fk, "penalty", this.data.data);
-      if (!(flats instanceof Array)) flats = [flats];
-      for (let k of flats) {
-        if (!k) continue;
-        const curValue = getProperty(this.data, k);
-        setProperty(this.data, k, curValue - penalty);
-      }
-    }
-  }
+  
 }
