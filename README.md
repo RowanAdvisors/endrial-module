@@ -1,6 +1,6 @@
 # Endrial Module
 
-This module modifies the core PF1 system for the 
+This module modifies the core PF1 system when turned on.
 
 List of modified rules:
 - Married wounds and vigor, and wounds thresholds
@@ -10,7 +10,10 @@ List of modified rules:
     - Restore 1 wound, 2 if long term care is done
 - Nonleathal Damage changes:
     - decrease vigor until 0, after that track nonleathal damage counting up
-    - when nonleathal damage is >= your current wounds you become unconcious 
+    - when nonleathal damage is >= your current wounds you become unconcious
+- Applying Damage/Healing via chat button:
+    - decreases vigor until 0 then decreases wounds
+    - applies healing only to vigor, wounds must be manually healed
 
 <p style="color:red">Development in progress ...</p>
 
