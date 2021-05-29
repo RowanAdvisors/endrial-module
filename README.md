@@ -14,6 +14,8 @@ List of modified rules:
 - Applying Damage/Healing via chat button:
     - decreases vigor until 0 then decreases wounds
     - applies healing only to vigor, wounds must be manually healed
+    - crit damage applies wound damage based on the multiplier of the weapon used to attack
+    - Sneak Attack conditional modifier's dice are applied to wound damage (half the number of sneak dice rounded down)
 
 <p style="color:red">Development in progress ...</p>
 
