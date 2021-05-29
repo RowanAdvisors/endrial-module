@@ -122,17 +122,15 @@ Hooks.on("actorRest", (actor,options,updateData,itemUpdates)=> {
   const promises = [];
   let vigor = actor.data.data.attributes.vigor,
     wounds = actor.data.data.attributes.wounds;
-  console.log(options);
-  wounds.value += 1;
+  let woundInc = 1;
   if(options?.longTermCare) {
-    wounds.value += 1;
+    woundInc += 1;
   }
-  console.log(wounds.value);
-
+  console.log(Math.clamped(wounds.value + woundInc, 0, wounds.max));
   promises.push(
     actor.update({
       "data.attributes.vigor.value": vigor.max,
-      "data.attributes.wounds.value":wounds.value
+      "data.attributes.wounds.value":Math.clamped(wounds.value + woundInc, 0, wounds.max)
     })
   );
   return Promise.all(promises);
@@ -162,7 +160,7 @@ Hooks.once("init", () => {
   
 
   libWrapper.register('endrial-module', 'game.pf1.entities.ItemPF._onChatCardAction', function (wrapped, ...args) {
-    console.log(args);
+    //console.log(args);
     // Extract card data
     const button = args[1].button;
     const item = args[1].item;
